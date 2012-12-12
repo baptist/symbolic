@@ -1,0 +1,10 @@
+LARGE SIZE SPIRAL GENERATED CODE / FOR LOOP (DONE. TESTS REQUIRED!)
+CONVERT TO PURE SPIRAL CODE -> Use Lambda expressions DONE
+LOOK INTO C matrix (spiral) => run basisvectors on MY generated Symbolic vector (representing symbolic result ~ lambda) AND CONVERT to somekind Symbolic Matrix (Based on Linearity of results) DONE
+Check very large (eg. 1000 samples large DFT ) PROGRESSING
+CORRECTNESS TESTS REQUIRED FOR ABOVE 'DONE' STATEMENTS!
+
+
+
+SSE? NO SHIT
+ASSEMBLER WUT?

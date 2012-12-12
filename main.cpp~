@@ -1,0 +1,57 @@
+/* 
+ * File:   main.cpp
+ * Author: baptist
+ *
+ * Created on September 27, 2012, 10:07 AM
+ */
+#include <stdlib.h>
+#include <cstdlib>
+#include <iostream>
+#include "se.h"
+
+using namespace se;
+
+// Redefine common C types to own symbolic types.
+#define double Double
+#define int Int
+#define char Char
+// Load program to be symbolically executed.
+#include "test/dft_8_loop.c"
+// Unset macros
+#undef double 
+#undef int
+#undef char
+
+
+int main(int argc, char** argv) 
+{
+    
+    // Read argument size
+    if (argc < 3)
+    {
+        std::cout << "Wrong number of arguments: <size of output> <size of input array> [<accumulate>]" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    long sizeY = atoi(argv[1]);
+    long sizeX = atoi(argv[2]);
+    
+    // Check if extra optional argument is set.
+    if (argc > 2)
+    {        
+        accumulate = (argv[3][0] != 'n');
+    }        
+        
+    // Initialize input and output vars.
+    Double X[sizeX], Y[sizeY];   
+    constructSymbolicArray(X, sizeX);
+    constructUnsymbolicArray(Y, sizeY);
+       
+    // Call function to be symbolically executed    
+    init_sub(); sub(Y, X);
+      
+    // Print results
+    Printer::printOutputSpiral(Y, sizeX, sizeY, accumulate);
+    
+    return 0;
+}
+

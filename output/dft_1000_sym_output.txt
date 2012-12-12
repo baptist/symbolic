@@ -1,0 +1,4 @@
+x:= var.fresh_t("x", TArray(TDouble, 8));;
+prog := Lambda(x, FList(TDouble, [0,0,0,0,0,0,0,0]));;
+M := Mat([prog.at(V([V(1),V(0),V(0),V(0),V(0),V(0),V(0),V(0)])).list,prog.at(V([V(0),V(1),V(0),V(0),V(0),V(0),V(0),V(0)])).list,prog.at(V([V(0),V(0),V(1),V(0),V(0),V(0),V(0),V(0)])).list,prog.at(V([V(0),V(0),V(0),V(1),V(0),V(0),V(0),V(0)])).list,prog.at(V([V(0),V(0),V(0),V(0),V(1),V(0),V(0),V(0)])).list,prog.at(V([V(0),V(0),V(0),V(0),V(0),V(1),V(0),V(0)])).list,prog.at(V([V(0),V(0),V(0),V(0),V(0),V(0),V(1),V(0)])).list,prog.at(V([V(0),V(0),V(0),V(0),V(0),V(0),V(0),V(1)])).list]);;
+reducedM := RulesStrengthReduce(M);

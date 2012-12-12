@@ -1,0 +1,47 @@
+#!/usr/bin/gawk -f
+BEGIN {
+	FS = "[\t ]+";
+	infunction = 0
+}
+
+$0 ~ /[a-zA-z0-9]+:/ {
+	if ($0 == "sub:") {
+		infunction = 1
+		print "void sub(double* Y, double* X) { \n"
+	} else if ($0 == "init_sub:") {
+		infunction = 1;
+		print "void init_sub() {"
+	}
+}
+
+#|push|add|sub|pop|leave
+$0 ~ /mov|add|sub/ && infunction == 1 && $0 !~ /[a-zA-z0-9]+:/ {
+		
+	printf( "x86_%s(decode(", trim($2))	
+	for (i=3; i <= NF; i++) {
+		if (trim($i) != "") {
+			printf( "\"%s\"", trim($i))
+			if (i < NF) {
+				printf(",")
+			}
+		}
+	}
+	printf( ")); \n")
+	
+
+}
+
+/ret/ {
+	print "}"
+	infunction = 0
+}
+
+END {
+	
+}
+
+
+function ltrim(s) { gsub(/^[ \t]+/, "", s); return s }
+function rtrim(s) { gsub(/[ \t]+$/, "", s); return s }
+function trim(s)  { return rtrim(ltrim(s)); }
+

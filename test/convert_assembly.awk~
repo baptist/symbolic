@@ -1,0 +1,73 @@
+#!/usr/bin/gawk -f
+BEGIN {
+	FS = " |\t";
+	infunction = 0
+}
+
+{
+	# remove \r
+	gsub(/\r$/, "");
+	
+	# remove comments
+	line = gensub(/^[ \t]*([^;]*);.*$/, "\\1", "g");
+	
+	# check if line is not empty
+	if (trim(line) != "") {
+		if (match(line, /=/)) {
+			trim(gsub(/=/, " ", line))
+			print "#define " line
+		} else if (match(line, /mov|sub|add|leave|push|pop|store|ret/)) {
+			
+			# check if beginning or ending of func
+			if (match(line, /^sub[ \t]PROC/)) {
+				print "void sub(double* Y, double* X) {"
+			} else if (match(line, /init_sub[ \t]PROC/)) {
+				print "void init_sub() {"
+			} else if (match(line, /(init_)?sub[ \t]ENDP/)) {
+				print "}"			
+			} else {
+		
+				# add brackets between command and arguments
+				size = split(line,linePieces,/[\t]+/);
+				ind = 0;
+				while (trim(linePieces[ind]) == "") {
+					ind++
+				}
+				printf( "%s(", trim(linePieces[ind]))	
+				for (i=ind+1; i <= size; i++) {
+					if (match(linePieces[i], /PTR ([^\[]+)\[([^\]]*)]/)) {
+						reform = gensub(/PTR ([^\[]*)\[([^\+]+)(.*)]/, "PTR(\\2[\\1\\3])", "g", linePieces[i]);
+						printf ("%s", trim(reform));
+					} else if (match(linePieces[i], /PTR \[[^\+]+\+[^\]]+]/)) {
+						reform = gensub(/PTR \[([^\+]+)(.*)]/, "PTR(\\1[\\2])", "g", linePieces[i]);
+						printf ("%s", trim(reform));
+					} else if (match(linePieces[i], /PTR \[([^\]\+]+)\])) {
+						reform = gensub(/PTR \[([^\+\]]+)\]/, "PTR(\\1[0])", "g", linePieces[i]);
+						printf ("%s", trim(reform));
+					}
+					else
+					{
+						printf( "%s", trim(linePieces[i]))
+					}
+				}
+				printf( "); \n") 
+			}
+		} 
+	} else {
+		printf("\n")
+	}
+	
+}
+
+
+
+
+END {
+	
+}
+
+
+function ltrim(s) { gsub(/^[ \t]+/, "", s); return s }
+function rtrim(s) { gsub(/[ \t]+$/, "", s); return s }
+function trim(s)  { return rtrim(ltrim(s)); }
+
